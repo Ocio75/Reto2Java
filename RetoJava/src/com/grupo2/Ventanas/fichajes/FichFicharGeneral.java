@@ -85,7 +85,7 @@ public class FichFicharGeneral extends JDialog {
 				DAO_departamento departamento = new DAO_departamento();
 				DAO_fichajes fichajes = new DAO_fichajes();
 				DAO_empleados empleados = new DAO_empleados();
-				
+
 				String debolucion = comboBox.getSelectedItem().toString();
 				String[] partes = debolucion.split("-");
 				String dni = partes[0].trim();
@@ -175,15 +175,21 @@ public class FichFicharGeneral extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				if (validarCampos()) {
 					DAO_fichajes fichajes = new DAO_fichajes();
-					fichajes.insertar(generarObjeto());
-					String debolucion = comboBox.getSelectedItem().toString();
-					String[] partes = debolucion.split("-");
-					String dni = partes[0].trim();
-					Calendar calendar = Calendar.getInstance();
-					java.util.Date fecha = calendar.getTime();
-					Time horaActual = new Time(fecha.getTime());
-					fichajes.cargarTablaPorEmpleado(table, Integer.parseInt(dni));
-					horaEntrada.setTime(horaActual);
+					if (fichajes.insertar(generarObjeto())) {
+						String debolucion = comboBox.getSelectedItem().toString();
+						String[] partes = debolucion.split("-");
+						String dni = partes[0].trim();
+						Calendar calendar = Calendar.getInstance();
+						java.util.Date fecha = calendar.getTime();
+						Time horaActual = new Time(fecha.getTime());
+						fichajes.cargarTablaPorEmpleado(table, Integer.parseInt(dni));
+						horaEntrada.setTime(horaActual);
+						MensaEmergentes.alerta(1, "Fichaje añadido con exito ", "Informacion");
+
+					}else {
+						MensaEmergentes.alerta(4, "No se a podido realizar el fichaje", "error");
+
+					}
 				}
 			}
 		});

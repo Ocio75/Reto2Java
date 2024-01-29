@@ -37,13 +37,13 @@ public class DTO_fichaje {
 		this.fecha = fecha;
 	}
 
-	public boolean cerrarFichaje() {
+	public void cerrarFichaje() {
 		if (hora_entrada != null && hora_salida == null) {
 			LocalTime horaActual = LocalTime.now();
-			hora_salida = Time.valueOf(horaActual);
-			return true;
+			hora_salida = new Time(horaActual.getHour(),horaActual.getMinute(),0);
+			//return true;
 		} else {
-			return false;
+			//return false;
 		}
 	}
 
@@ -85,6 +85,13 @@ public class DTO_fichaje {
 
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
+	}
+	
+
+	@Override
+	public String toString() {
+		return "DTO_fichaje [codigo_ficha=" + codigo_ficha + ", codigo_empleado=" + codigo_empleado + ", hora_entrada="
+				+ hora_entrada + ", hora_salida=" + hora_salida + ", fecha=" + fecha + "]";
 	}
 
 	@Override

@@ -38,7 +38,7 @@ public class JObjetos {
 			JasperPrint jasperPrintWindow = null;
 			Conexion conexion = Conexion.getInstancia();
 			try {
-				jasperPrintWindow = JasperFillManager.fillReport("src\\com\\jonocio\\Reportes\\" + archivo, null,
+				jasperPrintWindow = JasperFillManager.fillReport("src\\com\\grupo2\\Informes\\" + archivo, null,
 						conexion.getCon());
 			} catch (JRException e) {
 				e.printStackTrace();
@@ -48,11 +48,11 @@ public class JObjetos {
 
 		}
 
-		public static void mostrarReporteParametros(String archivo, HashMap parametro) {
+		public static void mostrarReporteParametros(String archivo,  HashMap<String, Object> parametro) {
 			JasperPrint jasperPrintWindow = null;
 			Conexion conexion = Conexion.getInstancia();
 			try {
-				jasperPrintWindow = JasperFillManager.fillReport("src\\com\\jonocio\\Reportes\\" + archivo, parametro,
+				jasperPrintWindow = JasperFillManager.fillReport("src\\com\\grupo2\\Informes\\" + archivo, parametro,
 						conexion.getCon());
 			} catch (JRException e) {
 				e.printStackTrace();
@@ -66,7 +66,7 @@ public class JObjetos {
 			Conexion conexion = Conexion.getInstancia();
 			JasperPrint jasperPrint = null;
 			try {
-				jasperPrint = JasperFillManager.fillReport("src\\com\\jonocio\\Reportes\\" + archivo, null,
+				jasperPrint = JasperFillManager.fillReport("src\\com\\grupo2\\Informes\\" + archivo, null,
 						conexion.getCon());
 			} catch (JRException e1) {
 				e1.printStackTrace();

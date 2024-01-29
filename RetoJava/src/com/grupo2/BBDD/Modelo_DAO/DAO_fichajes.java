@@ -146,34 +146,37 @@ public class DAO_fichajes implements Patron_DAO<DTO_fichaje> {
 			modelo.addRow(fila);
 		}
 	}
+
 	public void cargarTablaPorEmpleado(JTable tabla, int dni) {
-		Date temporal=null;
+		Date temporal = null;
 		DefaultTableModel modelo = new DefaultTableModel();
 		tabla.setModel(modelo);
 		tabla.setDefaultEditor(Object.class, null);
 		tabla.getTableHeader().setReorderingAllowed(false);
 		tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
+
 		modelo.addColumn("Codigo fichage");
 
 		modelo.addColumn("Fecha");
 		modelo.addColumn("Hora Entrada");
 		modelo.addColumn("Hora Salida");
-		//modelo.addColumn("Horas");
+		// modelo.addColumn("Horas");
 
 		ArrayList<DTO_fichaje> listaFichajes = listarTodos();
 
 		for (DTO_fichaje fichaje : listaFichajes) {
-			if(fichaje.getCodigo_empleado()==dni) {
-				if(fichaje.getFecha().equals(temporal)) {
-					Object[] fila2= {fichaje.getCodigo_ficha(),null,fichaje.getHora_entrada(),fichaje.getHora_salida()};
+			if (fichaje.getCodigo_empleado() == dni) {
+				if (fichaje.getFecha().equals(temporal)) {
+					Object[] fila2 = { fichaje.getCodigo_ficha(), null, fichaje.getHora_entrada(),
+							fichaje.getHora_salida() };
 					modelo.addRow(fila2);
 
-				}else if(fichaje.getFecha()!=temporal) {
-					temporal=fichaje.getFecha();
-					Object[] fila= {fichaje.getCodigo_ficha(),fichaje.getFecha(),null,null};
+				} else if (fichaje.getFecha() != temporal) {
+					temporal = fichaje.getFecha();
+					Object[] fila = { fichaje.getCodigo_ficha(), fichaje.getFecha(), null, null };
 					modelo.addRow(fila);
-					Object[] fila2= {fichaje.getCodigo_ficha(),null,fichaje.getHora_entrada(),fichaje.getHora_salida()};
+					Object[] fila2 = { fichaje.getCodigo_ficha(), null, fichaje.getHora_entrada(),
+							fichaje.getHora_salida() };
 					modelo.addRow(fila2);
 
 				}
@@ -181,4 +184,57 @@ public class DAO_fichajes implements Patron_DAO<DTO_fichaje> {
 		}
 		JObjetos.tabla.establecerAnchoCeroColumna(tabla, 0);
 	}
+
+	 public void cargarTablaPorEmpleadoYFecha(JTable tabla, int dni, Date date) {
+	        Date temporal = null;
+	        DefaultTableModel modelo = new DefaultTableModel();
+	        tabla.setModel(modelo);
+	        tabla.setDefaultEditor(Object.class, null);
+	        tabla.getTableHeader().setReorderingAllowed(false);
+	        tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+	        modelo.addColumn("Codigo fichage");
+	        modelo.addColumn("Fecha");
+	        modelo.addColumn("Hora Entrada");
+	        modelo.addColumn("Hora Salida");
+
+	        ArrayList<DTO_fichaje> listaFichajes = listarTodos();
+
+	        for (DTO_fichaje fichaje : listaFichajes) {
+	            if (fichaje.getCodigo_empleado() == dni) {
+	                Date factual = date;
+	                Date fFich = fichaje.getFecha();
+
+	                if (factual.getYear() == fFich.getYear() && factual.getMonth() == fFich.getMonth() && factual.getDate() == fFich.getDate()) {
+	                    if (fichaje.getFecha().equals(temporal)) {
+	                        Object[] fila2 = {fichaje.getCodigo_ficha(), null, fichaje.getHora_entrada(), fichaje.getHora_salida()};
+	                        modelo.addRow(fila2);
+	                    } else if (!fichaje.getFecha().equals(temporal)) {
+	                        temporal = fichaje.getFecha();
+	                        Object[] fila = {fichaje.getCodigo_ficha(), fichaje.getFecha(), null, null};
+	                        modelo.addRow(fila);
+	                        Object[] fila2 = {fichaje.getCodigo_ficha(), null, fichaje.getHora_entrada(), fichaje.getHora_salida()};
+	                        modelo.addRow(fila2);
+	                    }
+	                }
+	            }
+	        }
+
+	        JObjetos.tabla.establecerAnchoCeroColumna(tabla, 0);
+	    }
+
+	public int fichagesAbiertos(int dni) {
+		ArrayList<DTO_fichaje> listaFichajes = listarTodos();
+		Time hora = new Time(0,0,0);
+		int codigofich = -1;
+		for (DTO_fichaje fichaje : listaFichajes) {
+			if (fichaje.getCodigo_empleado() == dni) {
+				if (fichaje.getHora_salida().equals(hora)) {
+					codigofich = fichaje.getCodigo_ficha();
+				}
+			}
+		}
+		return codigofich;
+	}
+
 }
