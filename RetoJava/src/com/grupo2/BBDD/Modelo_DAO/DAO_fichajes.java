@@ -6,11 +6,22 @@ import java.util.ArrayList;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
+import com.grupo2.BBDD.Modelo_DTO.DTO_empleados;
 import com.grupo2.BBDD.Modelo_DTO.DTO_fichaje;
 import com.grupo2.BBDD.conexion.Conexion;
 import com.grupo2.Interfaces.Patron_DAO;
 import com.grupo2.Utiles.JObjetos;
+import com.grupo2.Utiles.MensaEmergentes;
 
 public class DAO_fichajes implements Patron_DAO<DTO_fichaje> {
 
@@ -38,7 +49,40 @@ public class DAO_fichajes implements Patron_DAO<DTO_fichaje> {
 			return false;
 		}
 	}
+	 public boolean insertarFichajesMasivos() {
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	        LocalDate fechaInicio = LocalDate.parse("2023-08-01", formatter);
+	        LocalDate fechaFin = LocalDate.now();
 
+	        try {
+	            while (!fechaInicio.isAfter(fechaFin)) {
+	                String fechaActual = fechaInicio.format(formatter);
+	        		DAO_empleados empleados = new DAO_empleados();
+
+	                // Obtener lista de empleados
+	        		ArrayList<DTO_empleados> empleadoe = empleados.listarTodos();
+
+	                // Generar registros de fichajes para cada empleado
+	                for (DTO_empleados empleado : empleadoe) {
+	                    DTO_fichaje fichaje = new DTO_fichaje();
+	                    fichaje.setCodigo_empleado(empleado.getDni());
+	                    fichaje.setHora_entrada(Time.valueOf("08:00:00"));
+	                    fichaje.setHora_salida(Time.valueOf("17:00:00"));
+	                    fichaje.setFecha(Date.valueOf(fechaActual));
+
+	                    insertar(fichaje);
+	                }
+
+	                fechaInicio = fechaInicio.plusDays(1); // Avanzar al siguiente día
+	            }
+
+	            return true;
+
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return false;
+	        }
+	    }
 	@Override
 	public boolean borrar(Object pk) {
 		String query = "DELETE FROM fichajes WHERE codigo_ficha = ?";
@@ -184,48 +228,79 @@ public class DAO_fichajes implements Patron_DAO<DTO_fichaje> {
 		}
 		JObjetos.tabla.establecerAnchoCeroColumna(tabla, 0);
 	}
+	  public String[] listaAnios() {
+	        String query = "SELECT DISTINCT YEAR(fecha) AS anio FROM fichajes";
+	        List<String> anios = new ArrayList<>();
 
-	 public void cargarTablaPorEmpleadoYFecha(JTable tabla, int dni, Date date) {
-	        Date temporal = null;
-	        DefaultTableModel modelo = new DefaultTableModel();
-	        tabla.setModel(modelo);
-	        tabla.setDefaultEditor(Object.class, null);
-	        tabla.getTableHeader().setReorderingAllowed(false);
-	        tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	        try (PreparedStatement preparedStatement = conexion.prepareStatement(query);
+	             ResultSet resultSet = preparedStatement.executeQuery()) {
 
-	        modelo.addColumn("Codigo fichage");
-	        modelo.addColumn("Fecha");
-	        modelo.addColumn("Hora Entrada");
-	        modelo.addColumn("Hora Salida");
+	            while (resultSet.next()) {
+	                int anio = resultSet.getInt("anio");
+	                anios.add(String.valueOf(anio));
+	            }
 
-	        ArrayList<DTO_fichaje> listaFichajes = listarTodos();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
 
-	        for (DTO_fichaje fichaje : listaFichajes) {
-	            if (fichaje.getCodigo_empleado() == dni) {
-	                Date factual = date;
-	                Date fFich = fichaje.getFecha();
+	        return anios.toArray(new String[0]);
+	    }
+	public void cargarTablaPorEmpleadoYFecha(JTable tabla, int dni, java.util.Date fecha2) {
+	    // Calculate the date 7 days ago
+	    Date fin = new Date(fecha2.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-	                if (factual.getYear() == fFich.getYear() && factual.getMonth() == fFich.getMonth() && factual.getDate() == fFich.getDate()) {
-	                    if (fichaje.getFecha().equals(temporal)) {
-	                        Object[] fila2 = {fichaje.getCodigo_ficha(), null, fichaje.getHora_entrada(), fichaje.getHora_salida()};
+	    DefaultTableModel modelo = new DefaultTableModel();
+	    tabla.setModel(modelo);
+	    tabla.setDefaultEditor(Object.class, null);
+	    tabla.getTableHeader().setReorderingAllowed(false);
+	    tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+	    modelo.addColumn("Codigo fichage");
+	    modelo.addColumn("Fecha");
+	    modelo.addColumn("Hora Entrada");
+	    modelo.addColumn("Hora Salida");
+
+	    String query = "SELECT * FROM fichajes WHERE codigo_empleado = ? order by fecha desc;";
+
+	    try (PreparedStatement preparedStatement = conexion.prepareStatement(query)) {
+	        preparedStatement.setInt(1, dni);
+
+	        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+	            Date temporal = null;
+
+	            while (resultSet.next()) {
+	                int codigo_ficha = resultSet.getInt("codigo_ficha");
+	                Time hora_entrada = resultSet.getTime("hora_entrada");
+	                Time hora_salida = resultSet.getTime("hora_salida");
+	                Date fecha = resultSet.getDate("fecha");
+			
+
+	                if (fecha.after(fin) && fecha.before(fecha2)) {
+	                    if (fecha.equals(temporal)) {
+	                        Object[] fila2 = { codigo_ficha, null, hora_entrada, hora_salida };
 	                        modelo.addRow(fila2);
-	                    } else if (!fichaje.getFecha().equals(temporal)) {
-	                        temporal = fichaje.getFecha();
-	                        Object[] fila = {fichaje.getCodigo_ficha(), fichaje.getFecha(), null, null};
+	                    } else if (!fecha.equals(temporal)) {
+	                        temporal = fecha;
+	                        Object[] fila = { codigo_ficha, fecha, null, null };
 	                        modelo.addRow(fila);
-	                        Object[] fila2 = {fichaje.getCodigo_ficha(), null, fichaje.getHora_entrada(), fichaje.getHora_salida()};
+	                        Object[] fila2 = { codigo_ficha, null, hora_entrada, hora_salida };
 	                        modelo.addRow(fila2);
 	                    }
 	                }
 	            }
 	        }
-
-	        JObjetos.tabla.establecerAnchoCeroColumna(tabla, 0);
+	    } catch (SQLException e) {
+	        e.printStackTrace();
 	    }
+
+	    JObjetos.tabla.establecerAnchoCeroColumna(tabla, 0);
+	}
+
 
 	public int fichagesAbiertos(int dni) {
 		ArrayList<DTO_fichaje> listaFichajes = listarTodos();
-		Time hora = new Time(0,0,0);
+		Time hora = new Time(0, 0, 0);
 		int codigofich = -1;
 		for (DTO_fichaje fichaje : listaFichajes) {
 			if (fichaje.getCodigo_empleado() == dni) {

@@ -4,11 +4,11 @@ import java.sql.*;
 
 public class Conexion {
 	private static Conexion instancia = null; 
-	private final String ip = "127.0.0.1";
+	private final String ip = "mysql-8001.dinaserver.com";
 	private final int port = 3306;
 	private final String BBDD = "reto2somo";
-	private final String user = "root";
-	private final String passwd = "";
+	private final String user = "somoCosto";
+	private final String passwd = "NyTgj2^&=173";
 	private final String cadena = "jdbc:mysql://" + ip + ":" + port + "/" + BBDD;
 	private final String driver = "com.mysql.jdbc.Driver";
 	protected static Connection con;

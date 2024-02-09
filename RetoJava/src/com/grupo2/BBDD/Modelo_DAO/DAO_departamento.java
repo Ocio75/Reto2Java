@@ -11,6 +11,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import com.grupo2.BBDD.Modelo_DTO.DTO_departamentos;
+import com.grupo2.BBDD.Modelo_DTO.DTO_empleados;
 import com.grupo2.BBDD.conexion.Conexion;
 import com.grupo2.Interfaces.Patron_DAO;
 
@@ -133,14 +134,27 @@ public class DAO_departamento implements Patron_DAO<DTO_departamentos> {
 		modelo.addColumn("Código Departamento");
 		modelo.addColumn("Nombre");
 		modelo.addColumn("Descripción");
+		modelo.addColumn("Nº de Empleados");
 
 		ArrayList<DTO_departamentos> listaDepartamentos = listarTodos();
 
 		for (DTO_departamentos departamento : listaDepartamentos) {
 			Object[] fila = { departamento.getCodigo_departamento(), departamento.getNombre(),
-					departamento.getDescripcion() };
+					departamento.getDescripcion(),contar(departamento.getCodigo_departamento()) };
 			modelo.addRow(fila);
 		}
+	}
+
+	private int contar(int codDep) {
+		DAO_empleados empleados = new DAO_empleados();
+		int cont =0;
+		ArrayList<DTO_empleados> listaEmpleados =empleados.listarTodos();
+		for(DTO_empleados empleado:listaEmpleados) {
+			if(empleado.getCodigo_departamento()==codDep) {
+				cont++;
+			}
+		}
+		return cont;
 	}
 
 	public String[] arrayNombres() {
@@ -148,8 +162,8 @@ public class DAO_departamento implements Patron_DAO<DTO_departamentos> {
 		String[] nombres = new String[listaDepartamentos.size()];
 		int i = 0;
 		for (DTO_departamentos departamento : listaDepartamentos) {
-			String cadena= departamento.getCodigo_departamento()+"-"+departamento.getNombre();
-			nombres[i]=(cadena.trim());
+			String cadena = departamento.getCodigo_departamento() + "-" + departamento.getNombre();
+			nombres[i] = (cadena.trim());
 			i++;
 		}
 		return nombres;

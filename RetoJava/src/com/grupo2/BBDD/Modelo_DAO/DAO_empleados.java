@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import com.grupo2.BBDD.Modelo_DTO.DTO_departamentos;
 import com.grupo2.BBDD.Modelo_DTO.DTO_empleados;
 import com.grupo2.BBDD.conexion.Conexion;
 import com.grupo2.Interfaces.Patron_DAO;
+import com.grupo2.Utiles.MensaEmergentes;
 
 public class DAO_empleados implements Patron_DAO<DTO_empleados> {
 
@@ -20,7 +22,7 @@ public class DAO_empleados implements Patron_DAO<DTO_empleados> {
 
 	@Override
 	public boolean insertar(DTO_empleados empleado) {
-		String query = "INSERT INTO empleados (dni, nombre, apellidos, antiguedad, n_seguridad_social, codigo_departamento, contraseña, foto) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+		String query = "INSERT INTO empleados (dni, nombre, apellidos, antiguedad, n_seguridad_social, codigo_departamento, contrasena, foto) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try {
 			PreparedStatement preparedStatement = conexion.prepareStatement(query);
@@ -61,7 +63,7 @@ public class DAO_empleados implements Patron_DAO<DTO_empleados> {
 
 	@Override
 	public boolean actualizar(DTO_empleados empleado) {
-		String query = "UPDATE empleados SET nombre = ?, apellidos = ?, antiguedad = ?, n_seguridad_social = ?, codigo_departamento = ?, contraseña = ?, foto = ? WHERE dni = ?";
+		String query = "UPDATE empleados SET nombre = ?, apellidos = ?, antiguedad = ?, n_seguridad_social = ?, codigo_departamento = ?, contrasena = ?, foto = ? WHERE dni = ?";
 
 		try {
 			PreparedStatement preparedStatement = conexion.prepareStatement(query);
@@ -99,7 +101,7 @@ public class DAO_empleados implements Patron_DAO<DTO_empleados> {
 					Date antiguedad = resultSet.getDate("antiguedad");
 					int n_seguridad_social = resultSet.getInt("n_seguridad_social");
 					int codigo_departamento = resultSet.getInt("codigo_departamento");
-					String contrasena = resultSet.getString("contraseña");
+					String contrasena = resultSet.getString("contrasena");
 					byte[] foto = resultSet.getBytes("foto");
 
 					return new DTO_empleados(dni, nombre, apellidos, antiguedad, n_seguridad_social,
@@ -129,7 +131,7 @@ public class DAO_empleados implements Patron_DAO<DTO_empleados> {
 				Date antiguedad = resultSet.getDate("antiguedad");
 				int n_seguridad_social = resultSet.getInt("n_seguridad_social");
 				int codigo_departamento = resultSet.getInt("codigo_departamento");
-				String contrasena = resultSet.getString("contraseña");
+				String contrasena = resultSet.getString("contrasena");
 				byte[] foto = resultSet.getBytes("foto");
 
 				DTO_empleados empleado = new DTO_empleados(dni, nombre, apellidos, antiguedad, n_seguridad_social,
@@ -146,6 +148,8 @@ public class DAO_empleados implements Patron_DAO<DTO_empleados> {
 
 	@Override
 	public void cargarTabla(JTable tabla) {
+		DAO_departamento departamento = new DAO_departamento();
+
 		DefaultTableModel modelo = new DefaultTableModel();
 		tabla.setModel(modelo);
 
@@ -154,18 +158,54 @@ public class DAO_empleados implements Patron_DAO<DTO_empleados> {
 		modelo.addColumn("Apellidos");
 		modelo.addColumn("Antigüedad");
 		modelo.addColumn("N Seguridad Social");
-		modelo.addColumn("Código Departamento");
-		modelo.addColumn("Contraseña");
-		modelo.addColumn("Foto");
+		modelo.addColumn("Departamento");
 
 		ArrayList<DTO_empleados> listaEmpleados = listarTodos();
 
 		for (DTO_empleados empleado : listaEmpleados) {
 			Object[] fila = { empleado.getDni(), empleado.getNombre(), empleado.getApellidos(),
-					empleado.getAntiguedad(), empleado.getN_seguridad_social(), empleado.getCodigo_departamento(),
-					empleado.getContrasena(), empleado.getFoto() };
+					empleado.getAntiguedad(), empleado.getN_seguridad_social(),
+					departamento.buscar(empleado.getCodigo_departamento()).getNombre(), };
 			modelo.addRow(fila);
 		}
+	}
+
+	public void cargarTablaPorDep(JTable tabla, int codigo) {
+		DAO_departamento departamento = new DAO_departamento();
+		int cont = 0;
+		DefaultTableModel modelo = new DefaultTableModel();
+		tabla.setModel(modelo);
+
+		modelo.addColumn("DNI");
+		modelo.addColumn("Nombre");
+		modelo.addColumn("Apellidos");
+		modelo.addColumn("Antigüedad");
+		modelo.addColumn("N Seguridad Social");
+
+		ArrayList<DTO_empleados> listaEmpleados = listarTodos();
+
+		for (DTO_empleados empleado : listaEmpleados) {
+			if (empleado.getCodigo_departamento() == codigo) {
+				cont++;
+				Object[] fila = { empleado.getDni(), empleado.getNombre(), empleado.getApellidos(),
+						empleado.getAntiguedad(), empleado.getN_seguridad_social() };
+				modelo.addRow(fila);
+			}
+		}
+		if (cont == 0) {
+			MensaEmergentes.alerta(4, "No hay Empleados de ese departamento", "Error");
+		}
+	}
+	public String[] arrayNombres() {
+		ArrayList<DTO_empleados> listaEmpleado = listarTodos();
+		String[] nombres = new String[listaEmpleado.size()];
+		int i = 0;
+		for (DTO_empleados empleado : listaEmpleado) {
+			String cadena = empleado.getDni()+"-" + empleado.getNombre();
+			nombres[i] = (cadena.trim());
+			i++;
+		}
+		return nombres;
 	}
 	public boolean validarCodigo(int codigo) {
 		ArrayList<DTO_empleados> listaEmpleado = listarTodos();

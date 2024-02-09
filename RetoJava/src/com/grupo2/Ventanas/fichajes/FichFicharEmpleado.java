@@ -99,8 +99,6 @@ public class FichFicharEmpleado extends JDialog {
 					DTO_fichaje fichaje = fichajes.buscar(codigoFich);
 					fichaje.setHora_salida(new Time(horaEntrada.getHours(),horaEntrada.getMinutes(),0));
 					if(fichajes.actualizar(fichaje)) {
-						MensaEmergentes.alerta(1,fichaje.toString(), "Informacion");
-
 						MensaEmergentes.alerta(1,"Fichaje cerrado ", "Informacion");
 						comprovatFichaje(dni);
 						cargarTabla(dni);

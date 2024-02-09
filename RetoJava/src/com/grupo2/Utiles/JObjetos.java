@@ -82,6 +82,26 @@ public class JObjetos {
 			}
 
 		}
+		public static void guardarArchivoRutaParametros(String archivo, String ruta, HashMap<String, Object> parametro ) {
+			Conexion conexion = Conexion.getInstancia();
+			JasperPrint jasperPrint = null;
+			try {
+				jasperPrint = JasperFillManager.fillReport("src\\com\\grupo2\\Informes\\" + archivo, parametro,
+						conexion.getCon());
+			} catch (JRException e1) {
+				e1.printStackTrace();
+			}
+			JRPdfExporter exp = new JRPdfExporter();
+			exp.setExporterInput(new SimpleExporterInput(jasperPrint));
+			exp.setExporterOutput(new SimpleOutputStreamExporterOutput(ruta));
+			MensaEmergentes.alerta(1, "Informe generado y almacenado correctamente", "Informacion");
+			try {
+				exp.exportReport();
+			} catch (JRException e1) {
+				e1.printStackTrace();
+			}
+
+		}
 	}
 
 	public class tabla {

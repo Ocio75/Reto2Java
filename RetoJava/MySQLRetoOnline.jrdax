@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jdbcDataAdapter class="net.sf.jasperreports.data.jdbc.JdbcDataAdapterImpl">
+  <name>MySQLRetoOnline</name>
+  <classpath>E:\Github\Reto2Java\RetoJava\lib\mysql-connector-java-5.1.49.jar</classpath>
+  <driver>com.mysql.jdbc.Driver</driver>
+  <username>somoCosto</username>
+  <password>NyTgj2^&amp;=173</password>
+  <url>jdbc:mysql://mysql-8001.dinaserver.com/reto2somo</url>
+  <database></database>
+  <savePassword>true</savePassword>
+  <serverAddress></serverAddress>
+</jdbcDataAdapter>

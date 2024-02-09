@@ -1,2 +1,8 @@
 eclipse.preferences.version=1
+encoding//src/com/grupo2/Informes/departamentos/listadoDepartamentos.jrxml=UTF-8
+encoding//src/com/grupo2/Informes/empleados/EmpleadosDeUnDepartamentos.jrxml=UTF-8
+encoding//src/com/grupo2/Informes/empleados/EmpleadosPorDepartamento.jrxml=UTF-8
 encoding//src/com/grupo2/Informes/fichajes/InfromeAnualTodosEmpleados.jrxml=UTF-8
+encoding//src/com/grupo2/Informes/fichajes/fichajesAnualEmpleado.jrxml=UTF-8
+encoding//src/com/grupo2/Informes/fichajes/fichajesMensual.jrxml=UTF-8
+encoding//src/com/grupo2/Informes/fichajes/fichajesPorMesAnioEmpleado.jrxml=UTF-8

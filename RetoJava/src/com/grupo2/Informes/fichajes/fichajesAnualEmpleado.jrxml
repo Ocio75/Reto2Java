@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6-5c96b6aa8a39ac1dc6b6bea4b81168e16dd39231  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="InfromeAnualTodosEmpleados" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3c3f1c3b-135e-4290-9c5d-57db0d5e71b1">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="fichajesAnualEmpleado" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d6a85dba-e46a-4dc5-bb8d-d336febd46b5">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MySQLRetoOnline"/>
+	<parameter name="anio" class="java.lang.Integer"/>
+	<parameter name="dni" class="java.lang.Integer"/>
 	<queryString language="SQL">
-		<![CDATA[SELECT f.*, e.nombre, e.apellidos
+		<![CDATA[SELECT f.*, e.nombre
 FROM fichajes as f, empleados as e
 WHERE f.codigo_empleado = e.dni
-  AND EXTRACT(YEAR FROM f.fecha) = 2024
-ORDER BY f.fecha ASC , f.codigo_empleado, f.hora_entrada]]>
+  AND EXTRACT(YEAR FROM f.fecha) = $P{anio} and  f.codigo_empleado =$P{dni}
+ORDER BY f.fecha DESC, f.codigo_empleado, f.hora_entrada]]>
 	</queryString>
 	<field name="hora_entrada" class="java.sql.Time">
 		<property name="com.jaspersoft.studio.field.name" value="hora_entrada"/>
@@ -30,28 +32,10 @@ ORDER BY f.fecha ASC , f.codigo_empleado, f.hora_entrada]]>
 		<property name="com.jaspersoft.studio.field.label" value="nombre"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="empleados"/>
 	</field>
-	<field name="apellidos" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="apellidos"/>
-		<property name="com.jaspersoft.studio.field.name" value="apellidos"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="empleados"/>
-	</field>
-	<sortField name="nombre" order="Descending"/>
-	<sortField name="fecha" order="Descending"/>
 	<group name="Group1">
 		<groupExpression><![CDATA[$F{nombre}]]></groupExpression>
 		<groupHeader>
-			<band height="33">
-				<textField>
-					<reportElement mode="Opaque" x="20" y="0" width="455" height="32" forecolor="#006699" backcolor="#E6E6E6" uuid="9c131375-7211-41a1-b80c-03bdef60546b"/>
-					<textElement>
-						<font size="24" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{nombre}+" "+$F{apellidos}]]></textFieldExpression>
-				</textField>
-				<line>
-					<reportElement x="-20" y="32" width="595" height="1" forecolor="#666666" uuid="5585ab24-e0a6-432d-bea8-8984953de723"/>
-				</line>
-			</band>
+			<band/>
 		</groupHeader>
 		<groupFooter>
 			<band/>
@@ -62,7 +46,7 @@ ORDER BY f.fecha ASC , f.codigo_empleado, f.hora_entrada]]>
 		<groupHeader>
 			<band height="32">
 				<textField>
-					<reportElement x="50" y="0" width="455" height="32" forecolor="#006699" uuid="7213a943-b953-48c7-904e-323fa3a3f2ef"/>
+					<reportElement x="0" y="0" width="455" height="32" forecolor="#006699" uuid="1eed666b-956f-48b9-8f6d-56a27eeb6ca7"/>
 					<textElement>
 						<font size="22" isBold="true"/>
 					</textElement>
@@ -80,23 +64,23 @@ ORDER BY f.fecha ASC , f.codigo_empleado, f.hora_entrada]]>
 	<title>
 		<band height="72">
 			<frame>
-				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#1C1C1C" uuid="5c0a44a5-9a22-431d-813c-b34cf699d804"/>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#1C1C1C" uuid="9fb48862-0b8e-4fd5-a7b2-94a287e101a4"/>
 				<staticText>
-					<reportElement x="110" y="25" width="270" height="43" forecolor="#FFFFFF" uuid="4ace3747-fed7-4b94-bdef-5f4815bd7d9b"/>
+					<reportElement x="96" y="20" width="234" height="43" forecolor="#FFFFFF" uuid="8dfea297-7c4f-4c0b-ab2a-62b05bb34ea1"/>
 					<textElement>
 						<font size="34" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Informe anual]]></text>
+					<text><![CDATA[Infrome anula ]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="439" y="39" width="141" height="41" forecolor="#FFFFFF" uuid="22dce6f6-61df-48ff-b7d8-3934131a213a"/>
+					<reportElement x="380" y="60" width="195" height="30" forecolor="#FFFFFF" uuid="8800504e-d5c7-4b62-a37b-7a2038cab0fe"/>
 					<textElement>
-						<font size="19"/>
+						<font size="16"/>
 					</textElement>
-					<textFieldExpression><![CDATA["Año: "+new SimpleDateFormat("yyyy").format($F{fecha})]]></textFieldExpression>
+					<textFieldExpression><![CDATA["Empleado: "+$F{nombre}]]></textFieldExpression>
 				</textField>
 				<image>
-					<reportElement x="10" y="7" width="79" height="79" uuid="db6c0888-7ed5-41b4-b0e9-f18dfe31a937"/>
+					<reportElement x="9" y="6" width="80" height="80" uuid="ac4e52f8-015b-49be-a441-e8e85d76313c"/>
 					<imageExpression><![CDATA["/res/Logo.png"]]></imageExpression>
 				</image>
 			</frame>
@@ -108,11 +92,11 @@ ORDER BY f.fecha ASC , f.codigo_empleado, f.hora_entrada]]>
 	<columnHeader>
 		<band height="21">
 			<line>
-				<reportElement x="-20" y="20" width="595" height="1" forecolor="#666666" uuid="979a6291-6696-44f0-9177-9966f716089e"/>
+				<reportElement x="-20" y="20" width="595" height="1" forecolor="#666666" uuid="78db6cfd-43d8-4d14-b6d9-602f2061bbd2"/>
 			</line>
 			<staticText>
-				<reportElement mode="Opaque" x="90" y="0" width="137" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="116bab73-7d78-408f-b845-09ba184cf871">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="90d54bbf-0438-439e-a28f-5276e82ee3e0"/>
+				<reportElement mode="Opaque" x="110" y="0" width="167" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="1be596d7-c0cc-41fb-ba23-9d6c637216fc">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c225f31c-1b8e-4a70-be42-5bf3fe345f06"/>
 				</reportElement>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
@@ -120,8 +104,8 @@ ORDER BY f.fecha ASC , f.codigo_empleado, f.hora_entrada]]>
 				<text><![CDATA[Hora entrada]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="227" y="0" width="133" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="e7895ec2-7a82-49fa-bbc0-1f4c1abf1172">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4d9dfd4c-50d2-4d65-b2a3-2f9cf486a934"/>
+				<reportElement mode="Opaque" x="277" y="0" width="153" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="735c05ca-1d89-45f2-8df4-73cba8de773f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="499497d9-7b62-48e8-8950-e7391c783aa6"/>
 				</reportElement>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
@@ -131,13 +115,13 @@ ORDER BY f.fecha ASC , f.codigo_empleado, f.hora_entrada]]>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20">
+		<band height="24">
 			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1" uuid="2d15be10-5371-4635-a286-0ce5c164e539"/>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1" uuid="ebededa5-148e-4488-ad0b-3f02802658a8"/>
 			</line>
 			<textField textAdjust="StretchHeight">
-				<reportElement x="90" y="0" width="137" height="20" uuid="762cf643-7afb-4021-99ab-d518ec6ad2d5">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="90d54bbf-0438-439e-a28f-5276e82ee3e0"/>
+				<reportElement x="110" y="0" width="167" height="20" uuid="685d4f60-0712-4baf-85ec-b5304bcf05d9">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c225f31c-1b8e-4a70-be42-5bf3fe345f06"/>
 				</reportElement>
 				<textElement>
 					<font size="14"/>
@@ -145,14 +129,17 @@ ORDER BY f.fecha ASC , f.codigo_empleado, f.hora_entrada]]>
 				<textFieldExpression><![CDATA[new SimpleDateFormat("HH:mm").format($F{hora_entrada})]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
-				<reportElement x="227" y="0" width="133" height="20" uuid="991f8132-bcf5-4f37-903d-8a570ca2bc0b">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4d9dfd4c-50d2-4d65-b2a3-2f9cf486a934"/>
+				<reportElement x="277" y="0" width="153" height="20" uuid="68f1bde7-d38d-46fe-87dd-8e931555fa1a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="499497d9-7b62-48e8-8950-e7391c783aa6"/>
 				</reportElement>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new SimpleDateFormat("HH:mm").format($F{hora_salida})]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement x="-30" y="0" width="595" height="1" forecolor="#666666" uuid="b495f73a-1dd2-4673-b8ea-6866799eafca"/>
+			</line>
 		</band>
 	</detail>
 	<columnFooter>
@@ -161,16 +148,16 @@ ORDER BY f.fecha ASC , f.codigo_empleado, f.hora_entrada]]>
 	<pageFooter>
 		<band height="17">
 			<textField>
-				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="50a72ed7-478a-4cee-8f4c-40190fbca4ba"/>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="99769163-9122-4cd7-bf02-9dd4c936d084"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="40df280d-dac6-41bd-ad70-3c0a1f2661da"/>
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="fe922b61-feca-4e6f-9e42-a0c9408773f1"/>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="EEEEE dd MMMMM yyyy">
-				<reportElement x="0" y="4" width="100" height="13" uuid="28ffa5cc-8bee-40fe-acf7-e2a18eadb85c"/>
+				<reportElement x="0" y="4" width="100" height="13" uuid="f0be32c6-05cf-4852-bf7d-208446948cc8"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 		</band>
